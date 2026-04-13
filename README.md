@@ -571,6 +571,38 @@ Connecting to ec2 instance in public subnet and configuration as a bastion host
 
 Copying the content of mern-key.pem private key into the bastion host
 Touch mern-key.pm
+<img width="975" height="548" alt="image" src="https://github.com/user-attachments/assets/ba71f385-43ea-441a-82c6-35c5edefba91" />
+
+Connecting from bastion host to ec2 instance in private subnet
+
+<img width="975" height="548" alt="image" src="https://github.com/user-attachments/assets/7feb76f7-5c2b-4f04-a130-1c605aeca158" />
+
+Now my ansible files are
+Db.yml – this will create install mongodb in ec2 instance in private subnet
+Web.yml :- this will configure frontend and backend in ec2 instance in public subnet
+
+Ansible commands
+1.	ansible-playbook -i hosts.ini db.yml
+2.	ansible-playbook -i hosts.ini web.yml
+
+<img width="975" height="548" alt="image" src="https://github.com/user-attachments/assets/8d6e87da-96d6-48f6-babc-45aa8a5cf7f2" />
+
+<img width="975" height="548" alt="image" src="https://github.com/user-attachments/assets/d5f5d3b6-2bea-4594-badb-6562f0d68228" />
+
+<img width="975" height="548" alt="image" src="https://github.com/user-attachments/assets/a1f7753e-504c-4acd-a5a5-f6cb96bb8a0d" />
+
+<img width="975" height="548" alt="image" src="https://github.com/user-attachments/assets/122651be-bb71-4865-895a-dd9d68e9bb3b" />
+
+Testing from the browser:
+http://3.110.83.171:3000/
+<img width="975" height="548" alt="image" src="https://github.com/user-attachments/assets/85b75046-d5f6-4d35-b3ca-8da58a8a89b1" />
+<img width="975" height="548" alt="image" src="https://github.com/user-attachments/assets/1126c76e-4099-4a15-a2b4-d1c02e17a9dd" />
+
+<img width="975" height="548" alt="image" src="https://github.com/user-attachments/assets/3d9d2146-4f40-4175-a3b3-f5beebad143d" />
+
+
+
+
 
 
 
