@@ -6,7 +6,7 @@
     app_dir: /home/ubuntu/app
     frontend_dir: "{{ app_dir }}/frontend"
     backend_dir: "{{ app_dir }}/backend"
-    backend_url: "http://13.235.114.62:3001"
+    backend_url: "http://52.66.152.69:3001"
 
   tasks:
 
