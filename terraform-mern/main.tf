@@ -204,8 +204,8 @@ resource "aws_security_group" "db_sg" {
 # ec2 instance creation:
 # frontend ec2 instance
 resource "aws_instance" "frontend" {
-  ami           = "ami-05d2d839d4f73aafb" # Amazon Linux
-  instance_type = "t2.micro"
+  ami           = "ami-05d2d839d4f73aafb" # Ubuntu
+  instance_type = "t3.small"
   subnet_id     = aws_subnet.public_subnet.id
   key_name      = aws_key_pair.mern.key_name
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
@@ -220,7 +220,7 @@ resource "aws_instance" "frontend" {
 # backend ec2 instance creation
 resource "aws_instance" "backend" {
   ami           = "ami-05d2d839d4f73aafb"
-  instance_type = "t2.micro"
+  instance_type = "t3.small"
   subnet_id     = aws_subnet.private_subnet.id
   key_name      = aws_key_pair.mern.key_name
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name

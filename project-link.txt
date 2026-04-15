@@ -1,1 +1,1 @@
-https://github.com/saiyedin786/travelmemory-deployment-ansible-terraform.git
+https://github.com/SaurabhSaurabh/travelmemory-infra-automation.git

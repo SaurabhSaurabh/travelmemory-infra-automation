@@ -6,7 +6,7 @@
     app_dir: /home/ubuntu/app
     frontend_dir: "{{ app_dir }}/frontend"
     backend_dir: "{{ app_dir }}/backend"
-    backend_url: "http://13.206.107.143:3001"
+    backend_url: "http://13.235.114.62:3001"
 
   tasks:
 
@@ -37,7 +37,7 @@
 
     - name: Clone Repository
       git:
-        repo: "https://github.com/saiyedin786/TravelMemory_prashant.git"
+        repo: "https://github.com/SaurabhSaurabh/TravelMemory.git"
         dest: "{{ app_dir }}"
         force: yes
 

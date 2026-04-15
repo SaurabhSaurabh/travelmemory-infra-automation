@@ -1,3 +1,50 @@
+# ======================
+# Terraform
+# ======================
 .terraform/
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+# ======================
+# Ansible
+# ======================
+*.retry
+
+# Ignore private keys
+*.pem
+*.key
+
+# Inventory files (if sensitive)
+hosts.ini
+
+# ======================
+# OS / Editor
+# ======================
+.DS_Store
+Thumbs.db
+
+# VS Code / IDE
+.vscode/
+.idea/
+
+# ======================
+# Logs
+# ======================
+*.log
+
+# ======================
+# Env / Secrets
+# ======================
+.env
+*.env
+
+# ======================
+# Node (if MERN involved)
+# ======================
+node_modules/
