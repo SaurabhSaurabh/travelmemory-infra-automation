@@ -1,7 +1,30 @@
-﻿# travelmemory-deployment-ansible-terraform
+# 🚀 TravelMemory Deployment (Terraform + Ansible)
+
+📄 Source:
+This project demonstrates end-to-end infrastructure provisioning and application deployment using:
+
+Terraform → Infrastructure as Code (AWS)
+Ansible → Configuration Management
+MERN Stack App → TravelMemory
+
+🔗 MERN App Used:
+https://github.com/UnpredictablePrashant/TravelMemory
+
+-----
+
+# 📌 Project Overview
+
+This project automates:
+
+AWS infrastructure setup (VPC, EC2, networking)
+Secure multi-tier architecture (public + private subnet)
+Application deployment using Ansible
+Bastion-based secure access to private resources
+ 
+ # travelmemory-deployment-ansible-terraform
 Project Statement
-MERN Application to use: https://github.com/UnpredictablePrashant/TravelMemory
-Tasks:
+MERN Application to use: https://github.com/UnpredictablePrashant/TravelMemory    
+Tasks:  
 Part 1: Infrastructure Setup with Terraform
 1. AWS Setup and Terraform Initialization:
    - Configure AWS CLI and authenticate with your AWS account.
@@ -20,37 +43,46 @@ Part 1: Infrastructure Setup with Terraform
    - Output the public IP of the web server EC2 instance.
   
 
-Project solution:
-Architecture overview
+# Project solution:
+🏗️ Architecture
 
+```
 Internet
    ↓
 [Internet Gateway]
    ↓
 [Public Subnet]
-   → EC2 (Node.js MERN App)
-   ↓ (via NAT)
+   → EC2 (Frontend + Backend - Node.js MERN App)
+   ↓ (via NAT Gateway)
 [Private Subnet]
-   → EC2 (MongoDB)
+   → EC2 (MongoDB Database)
 
-Step: 1:
-AWS Setup + Terraform Init
+```
 
-Aws configure
+# ⚙️ Part 1: Infrastructure Setup (Terraform)
+
+## 🔹 Step 1: AWS Setup
+
+AWS Setup + Terraform Init  
+ 
+```aws configure```
 <img width="975" height="183" alt="image" src="https://github.com/user-attachments/assets/bd4ffcce-ccc3-46df-943b-a04280b492c9" />
 
-Project Structure
+📁 Terraform Project Structure
+
+```
 terraform-mern/
 │── main.tf
 │── variables.tf
 │── outputs.tf
 │── provider.tf
+```
 
-<img width="975" height="404" alt="image" src="https://github.com/user-attachments/assets/8b9f30fc-2d81-4f34-a3e6-1b74cb17618a" />
+<img width="975" height="404" alt="image" src="https://github.com/user-attachments/assets/8b9f30fc-2d81-4f34-a3e6-1b74cb17618a" />   
 
 
-Provider.tf
-<img width="975" height="323" alt="image" src="https://github.com/user-attachments/assets/f450f4ac-f2e7-4513-a8ca-946ea88566e8" />
+Provider.tf   
+<img width="975" height="323" alt="image" src="https://github.com/user-attachments/assets/f450f4ac-f2e7-4513-a8ca-946ea88566e8" />   
 
 
 
@@ -64,7 +96,7 @@ terraform {
   }
 }
 
-# vpc
+### vpc
 resource "aws_vpc" "mern_vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -73,7 +105,7 @@ resource "aws_vpc" "mern_vpc" {
   }
 }
 
-# Public Subnet
+### Public Subnet
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.mern_vpc.id
   cidr_block              = "10.0.1.0/24"
@@ -85,7 +117,7 @@ resource "aws_subnet" "public_subnet" {
   
 }
 
-# private subnet
+### private subnet
 resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.mern_vpc.id
   cidr_block = "10.0.2.0/24"
@@ -95,7 +127,7 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-# internet gateway
+### internet gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.mern_vpc.id
    tags = {
@@ -103,7 +135,7 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-# Route Table (Public)
+### Route Table (Public)
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.mern_vpc.id
    tags = {
@@ -122,7 +154,7 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public_rt.id
 }
 
-# NAT Gateway (for private subnet)
+### NAT Gateway (for private subnet)
 resource "aws_eip" "nat_eip" {
 }
 
@@ -134,7 +166,7 @@ resource "aws_nat_gateway" "nat" {
   }
 }
 
-# Private Route Table
+### Private Route Table
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.mern_vpc.id
    tags = {
@@ -154,9 +186,8 @@ resource "aws_route_table_association" "private_assoc" {
 }
 
 
-# security groups
-
-# frontend-sg creation
+### Security groups
+#### frontend-sg creation
 resource "aws_security_group" "web_sg" {
   vpc_id = aws_vpc.mern_vpc.id
 
@@ -200,7 +231,7 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
-# database sg creation:
+#### database sg creation:
 resource "aws_security_group" "db_sg" {
   vpc_id = aws_vpc.mern_vpc.id
 
@@ -222,8 +253,8 @@ resource "aws_security_group" "db_sg" {
   }
 }
 
-# ec2 instance creation:
-# frontend ec2 instance
+### ec2 instance creation:
+#### frontend ec2 instance
 resource "aws_instance" "frontend" {
   ami           = "ami-05d2d839d4f73aafb" # Amazon Linux
   instance_type = "t2.micro"
@@ -238,7 +269,7 @@ resource "aws_instance" "frontend" {
   }
 }
 
-# backend ec2 instance creation
+#### backend ec2 instance creation
 resource "aws_instance" "backend" {
   ami           = "ami-05d2d839d4f73aafb"
   instance_type = "t2.micro"
@@ -251,7 +282,7 @@ resource "aws_instance" "backend" {
   }
 }
 
-# iam role
+### iam role
 resource "aws_iam_role" "ec2_role" {
   name = "ec2-role"
 
@@ -267,12 +298,8 @@ resource "aws_iam_role" "ec2_role" {
   })
 }
 
-
-
-
-
-
 Outputs.tf
+```
 output "frontend_public_ip" {
   value = aws_instance.frontend.public_ip
 }
@@ -280,16 +307,46 @@ output "backend_public_ip" {
   value = aws_instance.backend.public_ip
 
 }
+```
 
 Folder structure
 <img width="880" height="432" alt="image" src="https://github.com/user-attachments/assets/e477e73f-c544-48ca-bbf6-95d2011633c1" />
 
-Part-2 Project Implementation using Ansible
-Windows:
+## 🔹 Key Resources Created
+   🌐 Networking
+   VPC → 10.0.0.0/16
+   Public Subnet → 10.0.1.0/24
+   Private Subnet → 10.0.2.0/24
+   Internet Gateway
+   NAT Gateway
+## 🔐 Security
+   Web Security Group (ports: 22, 80, 443, 3000)
+   DB Security Group (ports: 22, 3001)
+   💻 Compute
+   Public EC2 → Frontend + Backend
+   Private EC2 → MongoDB
+
+## 🔹 Terraform Commands
+```
+terraform init
+terraform plan
+terraform apply
+```
+## 📤 Outputs
+```
+output "frontend_public_ip"  
+output "backend_public_ip"  
+```
+
+# ⚙️ Part 2: Configuration Management (Ansible)
+## 🖥️ Setup (WSL / Ubuntu)
+
+```
 1.	wsl --install -d Ubuntu
 2.	sudo apt update
 3.	sudo apt install ansible -y
 4.	ansible –version
+```
    
 <img width="975" height="610" alt="image" src="https://github.com/user-attachments/assets/3436dbba-5ae0-464a-8a95-48a301eaaee1" />
 
@@ -298,13 +355,14 @@ Windows:
 <img width="975" height="190" alt="image" src="https://github.com/user-attachments/assets/064f7b02-cee8-47b8-9a0a-c5cbefb24779" />
 
 
+## 📁 Inventory File (hosts.ini)
+### Creating hosts.ini
+#### [web]
+   ```bastion ansible_host=13.233.92.171 ansible_user=ubuntu ansible_ssh_private_key_file=~/mern-key.pem```
 
-Creating hosts.ini
-[web]
-bastion ansible_host=13.233.92.171 ansible_user=ubuntu ansible_ssh_private_key_file=~/mern-key.pem
+##### [db]
+``` private1 ansible_host=10.0.2.158 ansible_user=ubuntu ansible_ssh_private_key_file=~/mern-key.pem ansible_ssh_common_args='-o ProxyCommand="ssh -i ~/mern-key.pem ubuntu@13.233.92.171 -W %h:%p"' ```
 
-[db]
-private1 ansible_host=10.0.2.158 ansible_user=ubuntu ansible_ssh_private_key_file=~/mern-key.pem ansible_ssh_common_args='-o ProxyCommand="ssh -i ~/mern-key.pem ubuntu@13.233.92.171 -W %h:%p"'
 Creating db.yml for database mongodb configuration on aws instance in private subnet
 - name: Setup MongoDB Server
   hosts: db
@@ -328,7 +386,7 @@ Creating db.yml for database mongodb configuration on aws instance in private su
           - curl
         state: present
 
-    # Add MongoDB GPG key and official repo only on supported distro (jammy)
+    #### Add MongoDB GPG key and official repo only on supported distro (jammy)
     - name: Import MongoDB GPG key
       shell: |
         curl -fsSL https://pgp.mongodb.com/server-6.0.asc | \
@@ -347,7 +405,7 @@ Creating db.yml for database mongodb configuration on aws instance in private su
       apt:
         update_cache: yes
 
-    # Install MongoDB: use official mongodb-org for jammy, otherwise install distro package
+   #### Install MongoDB: use official mongodb-org for jammy, otherwise install distro package
     - name: Install MongoDB
       apt:
         name: mongodb-org
@@ -362,7 +420,7 @@ Creating db.yml for database mongodb configuration on aws instance in private su
         state: started
         enabled: yes
 
-    # Create admin user using mongosh if available, otherwise mongo
+    #### Create admin user using mongosh if available, otherwise mongo
     - name: Create MongoDB Admin User
       shell: |
         if command -v mongosh >/dev/null 2>&1; then
@@ -384,7 +442,7 @@ Creating db.yml for database mongodb configuration on aws instance in private su
 
  
 
-    #Firewall setup
+    #### Firewall setup
     - name: Install UFW
       apt:
         name: ufw
@@ -407,149 +465,146 @@ Creating db.yml for database mongodb configuration on aws instance in private su
         - 3001
         - 27017
 
-    # SSH security
+    #### SSH security
     - name: Disable root SSH login
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^PermitRootLogin'
         line: 'PermitRootLogin no'
-        backup: yes
+        backup: yes   
 
-    - name: Restart SSH service
-      service:
-        name: ssh
-        state: restarted
+    - name: Restart SSH service   
+      service:    
+        name: ssh    
+        state: restarted     
 
 
-Creating web.yml for ec2 instance in public subnet
+## 🌐 Application Setup (web.yml) - Creating web.yml for ec2 instance in public subnet      
+   
+   - name: Setup Web Server  
+     hosts: web  
+     become: yes  
+  
+     vars:  
+       app_dir: /home/ubuntu/app  
+       frontend_dir: "{{ app_dir }}/frontend"  
+       backend_dir: "{{ app_dir }}/backend"  
+       backend_url: "http://13.206.107.143:3001"  
 
-- name: Setup Web Server
-  hosts: web
-  become: yes
+     tasks: 
+   
+       ####  BASIC SETUP
+   
+       ##### - name: Update apt cache  
+       #####   apt:   
+       #####     update_cache: yes   
+   
+       - name: Install required packages  
+         apt:  
+           name:  
+             - curl  
+             - git  
+           state: present  
+   
+       - name: Add NodeSource repo  
+         shell: curl -fsSL https://deb.nodesource.com/setup_18.x | bash -  
+         args:   
+           executable: /bin/bash  
+    
+       - name: Install Node.js
+         apt:
+           name: nodejs
+           state: present
 
-  vars:
-    app_dir: /home/ubuntu/app
-    frontend_dir: "{{ app_dir }}/frontend"
-    backend_dir: "{{ app_dir }}/backend"
-    backend_url: "http://13.206.107.143:3001"
+       #### CLONE CODE
+       - name: Clone Repository
+         git:
+           repo: "https://github.com/SaurabhSaurabh/TravelMemory.git"
+           dest: "{{ app_dir }}"
+           force: yes
+   
+       - name: Set ownership to ubuntu
+         file:
+           path: "{{ app_dir }}"
+           owner: ubuntu
+           group: ubuntu
+           recurse: yes
 
-  tasks:
+       #### PM2 SETUP 
+       - name: Install PM2 globally
+         npm:
+           name: pm2
+           global: yes
+         become: yes
+   
+       - name: Set npm global bin path manually
+         set_fact:
+           npm_global_bin: "/usr/bin"
 
-    # ================= BASIC SETUP =================
+       ####  BACKEND 
+   
+       - name: Install Backend Dependencies
+         command: npm install
+         args:
+           chdir: "{{ backend_dir }}"
+         become_user: ubuntu
 
-    # - name: Update apt cache
-    #   apt:
-    #     update_cache: yes
+       #### - name: Stop existing backend
+       ####   shell: |
+       ####    pm2 PATH={{ npm_global_bin.stdout }}:$PATH pm2 delete backend || true
+       ####   become_user: ubuntu
 
-    - name: Install required packages
-      apt:
-        name:
-          - curl
-          - git
-        state: present
+       - name: Start Backend
+         command: pm2 start index.js --name backend
+         args:
+           chdir: "{{ backend_dir }}"
+         become_user: ubuntu
 
-    - name: Add NodeSource repo
-      shell: curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-      args:
-        executable: /bin/bash
+       ####  FRONTEND 
+   
+       - name: Install Frontend Dependencies
+         command: npm install
+         args:
+           chdir: "{{ frontend_dir }}"
+         become_user: ubuntu
 
-    - name: Install Node.js
-      apt:
-        name: nodejs
-        state: present
+       #### - name: Create frontend .env file
+       ####   copy:
+       ####     dest: "{{ frontend_dir }}/.env"
+       ####     content: |
+       ####       REACT_APP_API_URL={{ backend_url }}
+       ####   become_user: ubuntu
 
-    # ================= CLONE CODE =================
+       - name: Build Frontend
+         command: npm run build
+         args:
+           chdir: "{{ frontend_dir }}"
+         become_user: ubuntu
+   
+       - name: Install serve globally
+         npm:
+           name: serve
+           global: yes
+         become: yes
 
-    - name: Clone Repository
-      git:
-        repo: "https://github.com/SaurabhSaurabh/TravelMemory.git"
-        dest: "{{ app_dir }}"
-        force: yes
+       #### - name: Stop existing frontend
+       ####   shell: |
+       ####     pm2 PATH={{ npm_global_bin.stdout }}:$PATH pm2 delete frontend || true
+       ####   become_user: ubuntu
 
-    - name: Set ownership to ubuntu
-      file:
-        path: "{{ app_dir }}"
-        owner: ubuntu
-        group: ubuntu
-        recurse: yes
+       - name: Start Frontend
+         command: pm2 start npx --name frontend -- serve -s /home/ubuntu/app/frontend/build -l 3000
+         args:
+           chdir: "{{ frontend_dir }}"
+         become_user: ubuntu
 
-    # ================= PM2 SETUP =================
-
-    - name: Install PM2 globally
-      npm:
-        name: pm2
-        global: yes
-      become: yes
-
-    - name: Set npm global bin path manually
-      set_fact:
-        npm_global_bin: "/usr/bin"
-
-    # ================= BACKEND =================
-
-    - name: Install Backend Dependencies
-      command: npm install
-      args:
-        chdir: "{{ backend_dir }}"
-      become_user: ubuntu
-
-    # - name: Stop existing backend
-    #   shell: |
-    #     pm2 PATH={{ npm_global_bin.stdout }}:$PATH pm2 delete backend || true
-    #   become_user: ubuntu
-
-    - name: Start Backend
-      command: pm2 start index.js --name backend
-      args:
-        chdir: "{{ backend_dir }}"
-      become_user: ubuntu
-
-    # ================= FRONTEND =================
-
-    - name: Install Frontend Dependencies
-      command: npm install
-      args:
-        chdir: "{{ frontend_dir }}"
-      become_user: ubuntu
-
-    # - name: Create frontend .env file
-    #   copy:
-    #     dest: "{{ frontend_dir }}/.env"
-    #     content: |
-    #       REACT_APP_API_URL={{ backend_url }}
-    #   become_user: ubuntu
-
-    - name: Build Frontend
-      command: npm run build
-      args:
-        chdir: "{{ frontend_dir }}"
-      become_user: ubuntu
-
-    - name: Install serve globally
-      npm:
-        name: serve
-        global: yes
-      become: yes
-
-    # - name: Stop existing frontend
-    #   shell: |
-    #     pm2 PATH={{ npm_global_bin.stdout }}:$PATH pm2 delete frontend || true
-    #   become_user: ubuntu
-
-    - name: Start Frontend
-      command: pm2 start npx --name frontend -- serve -s /home/ubuntu/app/frontend/build -l 3000
-      args:
-        chdir: "{{ frontend_dir }}"
-      become_user: ubuntu
-
-    # ================= PM2 SAVE =================
-
-    - name: Save PM2 process list
-      command: pm2 save
-      become_user: ubuntu
-
-    - name: Setup PM2 startup
-      command: pm2 startup systemd -u ubuntu --hp /home/ubuntu
+       ####  PM2 SAVE 
+       - name: Save PM2 process list
+         command: pm2 save
+         become_user: ubuntu
+   
+       - name: Setup PM2 startup
+         command: pm2 startup systemd -u ubuntu --hp /home/ubuntu
 
 
 
